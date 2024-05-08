@@ -6,6 +6,7 @@
 #include <QPointer>
 
 #include "inputconvertbase.h"
+#include "../vmouse/vmouseControl.h"
 
 class QTcpSocket;
 class Receiver;
@@ -51,9 +52,11 @@ public:
     void setDeviceClipboard(bool pause = true);
     void clipboardPaste();
     void postTextInput(QString &text);
+    VMouseControl* getVmouseCtr();
 
 signals:
     void grabCursor(bool grab);
+    void setVMouse(bool state);
 
 protected:
     bool event(QEvent *event);
@@ -66,6 +69,7 @@ private:
     QPointer<Receiver> m_receiver;
     QPointer<InputConvertBase> m_inputConvert;
     std::function<qint64(const QByteArray&)> m_sendData = Q_NULLPTR;
+    VMouseControl m_vmouseCtr;
 };
 
 #endif // CONTROLLER_H

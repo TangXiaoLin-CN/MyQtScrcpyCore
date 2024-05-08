@@ -57,6 +57,7 @@ void Controller::updateScript(QString gameScript)
     }
     Q_ASSERT(m_inputConvert);
     connect(m_inputConvert, &InputConvertBase::grabCursor, this, &Controller::grabCursor);
+    connect(m_inputConvert, &InputConvertBase::setVMouse, this, &Controller::setVMouse);
 }
 
 bool Controller::isCurrentCustomKeymap()
@@ -260,4 +261,9 @@ void Controller::postKeyCodeClick(AndroidKeycode keycode)
     }
     controlEventUp->setInjectKeycodeMsgData(AKEY_EVENT_ACTION_UP, keycode, 0, AMETA_NONE);
     postControlMsg(controlEventUp);
+}
+
+VMouseControl *Controller::getVmouseCtr()
+{
+    return &m_vmouseCtr;
 }

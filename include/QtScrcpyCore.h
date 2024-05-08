@@ -28,6 +28,7 @@ public:
     }
     virtual void updateFPS(quint32 fps) { Q_UNUSED(fps); }
     virtual void grabCursor(bool grab) {Q_UNUSED(grab);}
+    virtual void setVMouse(bool state) {Q_UNUSED(state);}
 
     virtual void mouseEvent(const QMouseEvent *from, const QSize &frameSize, const QSize &showSize) {
         Q_UNUSED(from);

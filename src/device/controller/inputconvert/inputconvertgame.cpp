@@ -26,23 +26,34 @@ void InputConvertGame::mouseEvent(const QMouseEvent *from, const QSize &frameSiz
         }
         if (!switchGameMap()) {
             m_needBackMouseMove = false;
+            sendVMouseCtrMsg(VMouseControl::HIDE,0,0,0,0);
         }
         return;
     }
 
-    if (!m_needBackMouseMove && m_gameMap) {
-        updateSize(frameSize, showSize);
-        // mouse move
-        if (m_keyMap.isValidMouseMoveMap()) {
-            if (processMouseMove(from)) {
+    if(m_gameMap){
+        if (!m_needBackMouseMove) {
+            updateSize(frameSize, showSize);
+            // mouse move
+            if (m_keyMap.isValidMouseMoveMap()) {
+                if (processMouseMove(from)) {
+                    return;
+                }
+            }
+            // mouse click
+            if (processMouseClick(from)) {
                 return;
             }
-        }
-        // mouse click
-        if (processMouseClick(from)) {
-            return;
+        }else
+        {
+            if (QEvent::MouseMove == from->type()) {
+                // pos
+                QPointF pos = from->localPos();
+                sendVMouseCtrMsg(VMouseControl::SHOW,(int)pos.x(),(int)pos.y(),(int)showSize.width(),(int)showSize.height());
+            }
         }
     }
+
     InputConvertNormal::mouseEvent(from, frameSize, showSize);
 }
 
@@ -64,6 +75,7 @@ void InputConvertGame::keyEvent(const QKeyEvent *from, const QSize &frameSize, c
         }
         if (!switchGameMap()) {
             m_needBackMouseMove = false;
+            sendVMouseCtrMsg(VMouseControl::HIDE,0,0,0,0);
         }
         return;
     }
@@ -392,6 +404,10 @@ void InputConvertGame::processKeyClick(const QPointF &clickPos, bool clickTwice,
     if (switchMap && QEvent::KeyRelease == from->type()) {
         m_needBackMouseMove = !m_needBackMouseMove;
         hideMouseCursor(!m_needBackMouseMove);
+        if(!m_needBackMouseMove)
+        {
+            sendVMouseCtrMsg(VMouseControl::HIDE,0,0,0,0);
+        }
     }
 
     if (QEvent::KeyPress == from->type()) {

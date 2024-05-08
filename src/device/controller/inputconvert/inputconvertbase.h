@@ -7,6 +7,7 @@
 #include <QWheelEvent>
 
 #include "controlmsg.h"
+#include "../vmouse/vmouseControl.h"
 
 class Controller;
 class InputConvertBase : public QObject
@@ -28,9 +29,11 @@ public:
 
 signals:
     void grabCursor(bool grab);
+    void setVMouse(bool state);
 
 protected:
     void sendControlMsg(ControlMsg *msg);
+    void sendVMouseCtrMsg(VMouseControl::VMouseState state,int xLocal,int yLocal,int xSize,int ySize);
 
     QPointer<Controller> m_controller;
     // Qt reports repeated events as a boolean, but Android expects the actual

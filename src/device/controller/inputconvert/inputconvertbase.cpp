@@ -14,3 +14,10 @@ void InputConvertBase::sendControlMsg(ControlMsg *msg)
         m_controller->postControlMsg(msg);
     }
 }
+
+void InputConvertBase::sendVMouseCtrMsg(VMouseControl::VMouseState state,int xLocal = 0,int yLocal = 0,int xSize = 0,int ySize = 0)
+{
+    if (m_controller) {
+        m_controller->getVmouseCtr()->sendMsg(state,xLocal,yLocal,xSize,ySize);
+    }
+}

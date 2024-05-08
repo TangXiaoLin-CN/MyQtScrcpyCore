@@ -34,6 +34,7 @@ Device::Device(DeviceParams params, QObject *parent) : IDevice(parent), m_params
 
             return m_server->getControlSocket()->write(buffer.data(), buffer.length());
         }, params.gameScript, this);
+        m_controller->getVmouseCtr()->start(params.serial,9999); //连接到虚拟鼠标
     }
 
     m_stream = new Demuxer(this);
@@ -134,6 +135,11 @@ void Device::initSignals()
         connect(m_controller, &Controller::grabCursor, this, [this](bool grab){
             for (const auto& item : m_deviceObservers) {
                 item->grabCursor(grab);
+            }
+        });
+        connect(m_controller, &Controller::setVMouse, this, [this](bool state){
+            for (const auto& item : m_deviceObservers) {
+                item->setVMouse(state);
             }
         });
     }
