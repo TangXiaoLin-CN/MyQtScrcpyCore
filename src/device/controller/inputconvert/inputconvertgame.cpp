@@ -85,7 +85,7 @@ void InputConvertGame::keyEvent(const QKeyEvent *from, const QSize &frameSize, c
     if (m_needBackMouseMove && KeyMap::KMT_CLICK == node.type && node.data.click.switchMap) {
         updateSize(frameSize, showSize);
         // Qt::Key_Tab Qt::Key_M for PUBG mobile
-        processKeyClick(node.data.click.keyNode.pos, false, node.data.click.switchMap, from);
+        processKeyClick(node.data.click.keyNode.pos, false, node.data.click.switchMap,node.data.click.resetMap, from);
         return;
     }
 
@@ -123,15 +123,15 @@ void InputConvertGame::keyEvent(const QKeyEvent *from, const QSize &frameSize, c
             return;
         // 处理普通按键
         case KeyMap::KMT_CLICK:
-            processKeyClick(node.data.click.keyNode.pos, false, node.data.click.switchMap, from);
+            processKeyClick(node.data.click.keyNode.pos, false, node.data.click.switchMap,node.data.click.resetMap, from);
             processAndroidKey(node.data.click.keyNode.androidKey, from);
             return;
         case KeyMap::KMT_CLICK_TWICE:
-            processKeyClick(node.data.clickTwice.keyNode.pos, true, false, from);
+            processKeyClick(node.data.clickTwice.keyNode.pos, true, node.data.click.switchMap,node.data.click.resetMap, from);
             processAndroidKey(node.data.clickTwice.keyNode.androidKey, from);
             return;
         case KeyMap::KMT_CLICK_MULTI:
-            processKeyClickMulti(node.data.clickMulti.keyNode.delayClickNodes, node.data.clickMulti.keyNode.delayClickNodesCount, from);
+            processKeyClickMulti(node.data.clickMulti.keyNode.delayClickNodes, node.data.clickMulti.keyNode.delayClickNodesCount,node.data.clickMulti.switchMap,node.data.clickMulti.resetMap,from);
             return;
         case KeyMap::KMT_DRAG:
             processKeyDrag(node.data.drag.keyNode.pos, node.data.drag.keyNode.extendPos, from);
@@ -399,7 +399,7 @@ void InputConvertGame::processSteerWheel(const KeyMap::KeyMapNode &node, const Q
 
 // -------- key event --------
 
-void InputConvertGame::processKeyClick(const QPointF &clickPos, bool clickTwice, bool switchMap, const QKeyEvent *from)
+void InputConvertGame::processKeyClick(const QPointF &clickPos, bool clickTwice, bool switchMap,bool resetMap, const QKeyEvent *from)
 {
     if (switchMap && QEvent::KeyRelease == from->type()) {
         m_needBackMouseMove = !m_needBackMouseMove;
@@ -425,9 +425,15 @@ void InputConvertGame::processKeyClick(const QPointF &clickPos, bool clickTwice,
         sendTouchUpEvent(getTouchID(from->key()), clickPos);
         detachTouchID(from->key());
     }
+
+    if(resetMap)
+    {
+        resetGameMap();
+        qInfo() << QString("重置游戏映射");
+    }
 }
 
-void InputConvertGame::processKeyClickMulti(const KeyMap::DelayClickNode *nodes, const int count, const QKeyEvent *from)
+void InputConvertGame::processKeyClickMulti(const KeyMap::DelayClickNode *nodes, const int count, bool switchMap,bool resetMap, const QKeyEvent *from)
 {
     if (QEvent::KeyPress != from->type()) {
         return;
@@ -452,6 +458,19 @@ void InputConvertGame::processKeyClickMulti(const KeyMap::DelayClickNode *nodes,
             sendTouchUpEvent(id, clickPos);
             detachTouchID(key);
         });
+    }
+    if (switchMap) {
+        m_needBackMouseMove = !m_needBackMouseMove;
+        hideMouseCursor(!m_needBackMouseMove);
+        if(!m_needBackMouseMove)
+        {
+            sendVMouseCtrMsg(VMouseControl::HIDE,0,0,0,0);
+        }
+    }
+    if(resetMap)
+    {
+        resetGameMap();
+        qInfo() << QString("重置游戏映射");
     }
 }
 
@@ -716,4 +735,17 @@ void InputConvertGame::timerEvent(QTimerEvent *event)
         stopMouseMoveTimer();
         mouseMoveStopTouch();
     }
+}
+
+void InputConvertGame::resetGameMap()
+{
+    //先取消
+    //emit grabCursor(false);
+    hideMouseCursor(false);
+    m_needBackMouseMove = true;
+
+    //再开启
+    //emit grabCursor(true);
+    hideMouseCursor(true);
+    m_needBackMouseMove = false;
 }

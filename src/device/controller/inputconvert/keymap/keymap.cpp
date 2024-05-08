@@ -166,6 +166,7 @@ void KeyMap::loadKeyMap(const QString &json)
                 keyMapNode.data.click.keyNode.key = key.second;
                 keyMapNode.data.click.keyNode.pos = getItemPos(node, "pos");
                 keyMapNode.data.click.switchMap = getItemBool(node, "switchMap");
+                keyMapNode.data.click.resetMap = getItemBool(node, "resetMap");
                 keyMapNode.data.click.keyNode.androidKey = static_cast<AndroidKeycode>(getItemDouble(node, "androidKey"));
                 m_keyMapNodes.push_back(keyMapNode);
             } break;
@@ -187,6 +188,7 @@ void KeyMap::loadKeyMap(const QString &json)
                 keyMapNode.data.click.keyNode.key = key.second;
                 keyMapNode.data.click.keyNode.pos = getItemPos(node, "pos");
                 keyMapNode.data.click.switchMap = getItemBool(node, "switchMap");
+                keyMapNode.data.click.resetMap = getItemBool(node, "resetMap");
                 keyMapNode.data.click.keyNode.androidKey = static_cast<AndroidKeycode>(getItemDouble(node, "androidKey"));
                 m_keyMapNodes.push_back(keyMapNode);
             } break;
@@ -223,6 +225,8 @@ void KeyMap::loadKeyMap(const QString &json)
                     keyMapNode.data.clickMulti.keyNode.delayClickNodesCount++;
                 }
 
+                keyMapNode.data.clickMulti.switchMap = getItemBool(node, "switchMap");
+                keyMapNode.data.clickMulti.resetMap = getItemBool(node, "resetMap");
                 m_keyMapNodes.push_back(keyMapNode);
             } break;
             case KeyMap::KMT_STEER_WHEEL: {

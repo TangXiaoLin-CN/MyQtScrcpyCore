@@ -41,10 +41,10 @@ protected:
     void processSteerWheel(const KeyMap::KeyMapNode &node, const QKeyEvent *from);
 
     // click
-    void processKeyClick(const QPointF &clickPos, bool clickTwice, bool switchMap, const QKeyEvent *from);
+    void processKeyClick(const QPointF &clickPos, bool clickTwice,bool switchMap,bool resetMap, const QKeyEvent *from);
 
     // click mutil
-    void processKeyClickMulti(const KeyMap::DelayClickNode *nodes, const int count, const QKeyEvent *from);
+    void processKeyClickMulti(const KeyMap::DelayClickNode *nodes, const int count, bool switchMap,bool resetMap, const QKeyEvent *from);
 
     // drag
     void processKeyDrag(const QPointF &startPos, QPointF endPos, const QKeyEvent *from);
@@ -62,6 +62,7 @@ protected:
     void stopMouseMoveTimer();
 
     bool switchGameMap();
+    void resetGameMap();
     bool checkCursorPos(const QMouseEvent *from);
     void hideMouseCursor(bool hide);
 

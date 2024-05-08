@@ -76,6 +76,7 @@ public:
             {
                 KeyNode keyNode;
                 bool switchMap = false;
+                bool resetMap = false;
             } click;
             struct
             {
@@ -84,6 +85,8 @@ public:
             struct
             {
                 KeyNode keyNode;
+                bool switchMap = false;
+                bool resetMap = false;
             } clickMulti;
             struct
             {
