@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QtMath>
 
 #include "bufferutil.h"
 #include "controlmsg.h"
@@ -111,7 +112,7 @@ void ControlMsg::writePosition(QBuffer &buffer, const QRect &value)
 quint16 ControlMsg::flostToU16fp(float f)
 {
     Q_ASSERT(f >= 0.0f && f <= 1.0f);
-    quint32 u = f * 0x1p16f; // 2^16
+    quint32 u = f * qPow(2,16); // 2^16
     if (u >= 0xffff) {
         u = 0xffff;
     }
@@ -121,7 +122,7 @@ quint16 ControlMsg::flostToU16fp(float f)
 qint16 ControlMsg::flostToI16fp(float f)
 {
     Q_ASSERT(f >= -1.0f && f <= 1.0f);
-    qint32 i = f * 0x1p15f; // 2^15
+    qint32 i = f * qPow(2,15); // 2^15
     Q_ASSERT(i >= -0x8000);
     if (i >= 0x7fff) {
         Q_ASSERT(i == 0x8000); // for f == 1.0f

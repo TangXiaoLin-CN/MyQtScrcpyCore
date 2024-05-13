@@ -167,7 +167,7 @@ void KeyMap::loadKeyMap(const QString &json)
                 keyMapNode.data.click.keyNode.pos = getItemPos(node, "pos");
                 keyMapNode.data.click.switchMap = getItemBool(node, "switchMap");
                 keyMapNode.data.click.resetMap = getItemBool(node, "resetMap");
-                keyMapNode.data.click.keyNode.androidKey = static_cast<AndroidKeycode>(getItemDouble(node, "androidKey"));
+                keyMapNode.data.click.keyNode.androidKey = static_cast<AndroidKeycode>((int)getItemDouble(node, "androidKey"));
                 m_keyMapNodes.push_back(keyMapNode);
             } break;
             case KeyMap::KMT_CLICK_TWICE: {
@@ -189,7 +189,7 @@ void KeyMap::loadKeyMap(const QString &json)
                 keyMapNode.data.click.keyNode.pos = getItemPos(node, "pos");
                 keyMapNode.data.click.switchMap = getItemBool(node, "switchMap");
                 keyMapNode.data.click.resetMap = getItemBool(node, "resetMap");
-                keyMapNode.data.click.keyNode.androidKey = static_cast<AndroidKeycode>(getItemDouble(node, "androidKey"));
+                keyMapNode.data.click.keyNode.androidKey = static_cast<AndroidKeycode>((int)getItemDouble(node, "androidKey"));
                 m_keyMapNodes.push_back(keyMapNode);
             } break;
             case KeyMap::KMT_CLICK_MULTI: {
@@ -304,7 +304,7 @@ void KeyMap::loadKeyMap(const QString &json)
                 keyMapNode.type = type;
                 keyMapNode.data.androidKey.keyNode.type = key.first;
                 keyMapNode.data.androidKey.keyNode.key = key.second;
-                keyMapNode.data.androidKey.keyNode.androidKey = static_cast<AndroidKeycode>(getItemDouble(node, "androidKey"));
+                keyMapNode.data.androidKey.keyNode.androidKey = static_cast<AndroidKeycode>((int)getItemDouble(node, "androidKey"));
                 m_keyMapNodes.push_back(keyMapNode);
             } break;
             default:
