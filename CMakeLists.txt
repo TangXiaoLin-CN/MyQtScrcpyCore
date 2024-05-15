@@ -1,3 +1,8 @@
+﻿# 设置策略CMP0091为NEW，新策略
+if (POLICY CMP0091)
+  cmake_policy(SET CMP0091 NEW)
+endif (POLICY CMP0091)
+
 set(QSC_PROJECT_NAME "QtScrcpyCore")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -122,6 +127,10 @@ target_link_libraries(QtScrcpyCore PRIVATE
 
 set_target_properties(${QSC_PROJECT_NAME} PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${QSC_DEPLOY_PATH}/$<0:>"
+)
+
+set_target_properties(${QSC_PROJECT_NAME} PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
 
 target_include_directories(${QSC_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
