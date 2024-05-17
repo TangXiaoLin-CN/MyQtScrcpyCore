@@ -1,4 +1,4 @@
-#include <QTcpSocket>
+﻿#include <QTcpSocket>
 #include <QHostAddress>
 #include <QTime>
 #include <QElapsedTimer>
@@ -115,7 +115,7 @@ void VMouseControl::startVMouse(int port)
     });
     connect(vmouseCtrSocket, &QIODevice::readyRead, vmouseCtrSocket, [this, vmouseCtrSocket]() {
         qint64 recv = vmouseCtrSocket->bytesAvailable();
-        qDebug() << "VMouseOutput::recv data:" << recv;
+        //qDebug() << "VMouseOutput::recv data:" << recv;
 
         if (m_buffer.capacity() < recv) {
             m_buffer.reserve(recv);
