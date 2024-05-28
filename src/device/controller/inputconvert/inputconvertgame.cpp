@@ -104,14 +104,14 @@ void InputConvertGame::keyEvent(const QKeyEvent *from, const QSize &frameSize, c
                 int delay = 30;
                 QTimer::singleShot(delay, this, [this]() { mouseMoveStopTouch(); });
                 QTimer::singleShot(delay * 2, this, [this]() {
-                    mouseMoveStartTouch(nullptr);
+                    mouseMoveStartTouch(nullptr,false);
                     m_processMouseMove = true;
                 });
 
                 stopMouseMoveTimer();
             } else {
                 mouseMoveStopTouch();
-                mouseMoveStartTouch(nullptr);
+                mouseMoveStartTouch(nullptr,false);
             }
             return;
         }
@@ -601,7 +601,7 @@ bool InputConvertGame::processMouseMove(const QMouseEvent *from)
         QPointF speedRatio  {m_keyMap.getMouseMoveMap().data.mouseMove.speedRatio};
         QPointF distance    {distance_raw.x() / speedRatio.x(), distance_raw.y() / speedRatio.y()};
 
-        mouseMoveStartTouch(from);
+        mouseMoveStartTouch(from,true);
         startMouseMoveTimer();
 
         m_ctrlMouseMove.lastConverPos.setX(m_ctrlMouseMove.lastConverPos.x() + distance.x() / m_showSize.width());
@@ -614,12 +614,12 @@ bool InputConvertGame::processMouseMove(const QMouseEvent *from)
                 int delay = 30;
                 QTimer::singleShot(delay, this, [this]() { mouseMoveStopTouch(); });
                 QTimer::singleShot(delay * 2, this, [this]() {
-                    mouseMoveStartTouch(nullptr);
+                    mouseMoveStartTouch(nullptr,false);
                     m_processMouseMove = true;
                 });
             } else {
                 mouseMoveStopTouch();
-                mouseMoveStartTouch(from);
+                mouseMoveStartTouch(from,false);
             }
         }
 
@@ -663,12 +663,18 @@ void InputConvertGame::moveCursorTo(const QMouseEvent *from, const QPoint &local
     QCursor::setPos(globalPos);
 }
 
-void InputConvertGame::mouseMoveStartTouch(const QMouseEvent *from)
+void InputConvertGame::mouseMoveStartTouch(const QMouseEvent *from,bool isStart)
 {
-    Q_UNUSED(from)
+    //Q_UNUSED(from)
     if (!m_ctrlMouseMove.touching) {
-        QPointF mouseMoveStartPos
-            = m_ctrlMouseMove.smallEyes ? m_keyMap.getMouseMoveMap().data.mouseMove.smallEyes.pos : m_keyMap.getMouseMoveMap().data.mouseMove.startPos;
+        QPointF* startPos;
+        if( from != nullptr)
+        {
+            startPos = new QPointF(from->localPos().x() / m_showSize.width(),from->localPos().y() / m_showSize.height());
+        }
+        QPointF mouseMoveStartPos =
+            m_ctrlMouseMove.smallEyes ? m_keyMap.getMouseMoveMap().data.mouseMove.smallEyes.pos :  isStart ? *startPos : m_keyMap.getMouseMoveMap().data.mouseMove.startPos;
+
         int id = attachTouchID(Qt::ExtraButton24);
         sendTouchDownEvent(id, mouseMoveStartPos);
         m_ctrlMouseMove.lastConverPos = mouseMoveStartPos;
@@ -688,7 +694,7 @@ void InputConvertGame::mouseMoveStopTouch()
 void InputConvertGame::startMouseMoveTimer()
 {
     stopMouseMoveTimer();
-    m_ctrlMouseMove.timer = startTimer(500);
+    m_ctrlMouseMove.timer = startTimer(5000);
 }
 
 void InputConvertGame::stopMouseMoveTimer()

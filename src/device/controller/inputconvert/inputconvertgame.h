@@ -1,4 +1,4 @@
-#ifndef INPUTCONVERTGAME_H
+﻿#ifndef INPUTCONVERTGAME_H
 #define INPUTCONVERTGAME_H
 
 #include <QPointF>
@@ -56,7 +56,7 @@ protected:
     bool processMouseClick(const QMouseEvent *from);
     bool processMouseMove(const QMouseEvent *from);
     void moveCursorTo(const QMouseEvent *from, const QPoint &localPosPixel);
-    void mouseMoveStartTouch(const QMouseEvent *from);
+    void mouseMoveStartTouch(const QMouseEvent *from,bool isStart);
     void mouseMoveStopTouch();
     void startMouseMoveTimer();
     void stopMouseMoveTimer();
