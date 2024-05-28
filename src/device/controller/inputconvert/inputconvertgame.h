@@ -38,7 +38,7 @@ protected:
     int getTouchID(int key);
 
     // steer wheel
-    void processSteerWheel(const KeyMap::KeyMapNode &node, const QKeyEvent *from);
+    void processSteerWheel(const KeyMap::KeyMapNode &node, const QKeyEvent *from,bool resetMap);
 
     // click
     void processKeyClick(const QPointF &clickPos, bool clickTwice,bool switchMap,bool resetMap, const QKeyEvent *from);

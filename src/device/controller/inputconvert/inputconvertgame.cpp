@@ -119,7 +119,7 @@ void InputConvertGame::keyEvent(const QKeyEvent *from, const QSize &frameSize, c
         switch (node.type) {
         // 处理方向盘
         case KeyMap::KMT_STEER_WHEEL:
-            processSteerWheel(node, from);
+            processSteerWheel(node, from,node.data.steerWheel.resetMap);
             return;
         // 处理普通按键
         case KeyMap::KMT_CLICK:
@@ -323,7 +323,7 @@ void InputConvertGame::onSteerWheelTimer() {
     }
 }
 
-void InputConvertGame::processSteerWheel(const KeyMap::KeyMapNode &node, const QKeyEvent *from)
+void InputConvertGame::processSteerWheel(const KeyMap::KeyMapNode &node, const QKeyEvent *from,bool resetMap)
 {
     int key = from->key();
     bool flag = from->type() == QEvent::KeyPress;
@@ -394,6 +394,11 @@ void InputConvertGame::processSteerWheel(const KeyMap::KeyMapNode &node, const Q
                       m_ctrlSteerWheel.delayData.queueTimer);
     }
     m_ctrlSteerWheel.delayData.timer->start();
+    if(resetMap)
+    {
+        resetGameMap();
+        qInfo() << QString("重置游戏映射");
+    }
     return;
 }
 
@@ -739,13 +744,9 @@ void InputConvertGame::timerEvent(QTimerEvent *event)
 
 void InputConvertGame::resetGameMap()
 {
-    //先取消
-    //emit grabCursor(false);
-    hideMouseCursor(false);
-    m_needBackMouseMove = true;
-
-    //再开启
-    //emit grabCursor(true);
-    hideMouseCursor(true);
-    m_needBackMouseMove = false;
+    if(m_gameMap) //如果是开启的
+    {
+        switchGameMap();//先关闭
+    }
+    switchGameMap();
 }

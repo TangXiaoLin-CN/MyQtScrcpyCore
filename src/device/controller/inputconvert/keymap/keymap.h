@@ -92,6 +92,7 @@ public:
             {
                 QPointF centerPos = { 0.0, 0.0 };
                 KeyNode left, right, up, down;
+                bool resetMap = false;
             } steerWheel;
             struct
             {
