@@ -417,6 +417,10 @@ void InputConvertGame::processKeyClick(const QPointF &clickPos, bool clickTwice,
 
     if (QEvent::KeyPress == from->type()) {
         int id = attachTouchID(from->key());
+        if(id == m_ctrlMouseMove.touchId)
+        {
+             qInfo() << QString("异常点击");
+        }
         sendTouchDownEvent(id, clickPos);
         if (clickTwice) {
             sendTouchUpEvent(getTouchID(from->key()), clickPos);
@@ -622,8 +626,10 @@ bool InputConvertGame::processMouseMove(const QMouseEvent *from)
                 mouseMoveStartTouch(from,false);
             }
         }
-
-        sendTouchMoveEvent(getTouchID(Qt::ExtraButton24), m_ctrlMouseMove.lastConverPos);
+        if(m_ctrlMouseMove.touching)
+        {
+            sendTouchMoveEvent(m_ctrlMouseMove.touchId, m_ctrlMouseMove.lastConverPos);
+        }
     }
     m_ctrlMouseMove.lastPos = from->localPos();
     return true;
@@ -676,6 +682,7 @@ void InputConvertGame::mouseMoveStartTouch(const QMouseEvent *from,bool isStart)
             m_ctrlMouseMove.smallEyes ? m_keyMap.getMouseMoveMap().data.mouseMove.smallEyes.pos : m_keyMap.getMouseMoveMap().data.mouseMove.startPos;
 
         int id = attachTouchID(Qt::ExtraButton24);
+        m_ctrlMouseMove.touchId = id;
         sendTouchDownEvent(id, mouseMoveStartPos);
         m_ctrlMouseMove.lastConverPos = mouseMoveStartPos;
         m_ctrlMouseMove.touching = true;
@@ -685,8 +692,9 @@ void InputConvertGame::mouseMoveStartTouch(const QMouseEvent *from,bool isStart)
 void InputConvertGame::mouseMoveStopTouch()
 {
     if (m_ctrlMouseMove.touching) {
-        sendTouchUpEvent(getTouchID(Qt::ExtraButton24), m_ctrlMouseMove.lastConverPos);
+        sendTouchUpEvent(m_ctrlMouseMove.touchId, m_ctrlMouseMove.lastConverPos);
         detachTouchID(Qt::ExtraButton24);
+        m_ctrlMouseMove.touchId = -1;
         m_ctrlMouseMove.touching = false;
         m_ctrlMouseMove.lastPos = QPointF(0.0, 0.0);
     }
