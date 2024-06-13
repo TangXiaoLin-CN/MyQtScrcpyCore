@@ -97,32 +97,38 @@ void InputConvertGame::keyEvent(const QKeyEvent *from, const QSize &frameSize, c
 
         // small eyes
         if (m_keyMap.isValidMouseMoveMap()) {
+            bool needReturn = false;
             if(from->key() == m_keyMap.getMouseMoveMap().data.mouseMove.smallEyes.key)
             {
                 m_ctrlMouseMove.smallEyes = (QEvent::KeyPress == from->type());
+                needReturn = true;
             }else if(from->key() == m_keyMap.getMouseMoveMap().data.mouseMove.medicine.key)
             {
                 m_ctrlMouseMove.medicine = (QEvent::KeyPress == from->type());
+                needReturn = true;
             }else if(from->key() == m_keyMap.getMouseMoveMap().data.mouseMove.missile.key)
             {
                 m_ctrlMouseMove.missile = (QEvent::KeyPress == from->type());
+                needReturn = true;
             }
+            if(needReturn)
+            {
+                if (QEvent::KeyPress == from->type()) {
+                    m_processMouseMove = false;
+                    int delay = 30;
+                    QTimer::singleShot(delay, this, [this]() { mouseMoveStopTouch(); });
+                    QTimer::singleShot(delay * 2, this, [this]() {
+                        mouseMoveStartTouch(nullptr,false);
+                        m_processMouseMove = true;
+                    });
 
-            if (QEvent::KeyPress == from->type()) {
-                m_processMouseMove = false;
-                int delay = 30;
-                QTimer::singleShot(delay, this, [this]() { mouseMoveStopTouch(); });
-                QTimer::singleShot(delay * 2, this, [this]() {
+                    stopMouseMoveTimer();
+                } else {
+                    mouseMoveStopTouch();
                     mouseMoveStartTouch(nullptr,false);
-                    m_processMouseMove = true;
-                });
-
-                stopMouseMoveTimer();
-            } else {
-                mouseMoveStopTouch();
-                mouseMoveStartTouch(nullptr,false);
+                }
+                return;
             }
-            return;
         }
 
         switch (node.type) {
