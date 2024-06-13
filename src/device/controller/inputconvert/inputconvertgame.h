@@ -116,6 +116,8 @@ private:
         bool touching = false;
         int timer = 0;
         bool smallEyes = false;
+        bool medicine = false;
+        bool missile = false;
         int touchId = -1;
     } m_ctrlMouseMove;
 

@@ -1,4 +1,4 @@
-#ifndef KEYMAP_H
+﻿#ifndef KEYMAP_H
 #define KEYMAP_H
 #include <QJsonObject>
 #include <QMetaEnum>
@@ -103,6 +103,8 @@ public:
                 QPointF startPos   = { 0.0, 0.0 };
                 QPointF speedRatio = { 1.0, 1.0 };
                 KeyNode smallEyes;
+                KeyNode medicine;
+                KeyNode missile;
             } mouseMove;
             struct
             {

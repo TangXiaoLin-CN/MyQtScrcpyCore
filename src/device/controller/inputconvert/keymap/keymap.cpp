@@ -1,4 +1,4 @@
-#include <QCoreApplication>
+﻿#include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
@@ -116,16 +116,81 @@ void KeyMap::loadKeyMap(const QString &json)
                 goto parseError;
             }
 
-            QPair<ActionType, int> key = getItemKey(smallEyes, "key");
-            if (key.first == AT_INVALID) {
+            QPair<ActionType, int> keyEye = getItemKey(smallEyes, "key");
+            if (keyEye.first == AT_INVALID) {
                 errorString = QString("json error: keyMapNodes node invalid key: %1").arg(smallEyes.value("key").toString());
                 goto parseError;
             }
 
-            keyMapNode.data.mouseMove.smallEyes.type = key.first;
-            keyMapNode.data.mouseMove.smallEyes.key = key.second;
+            keyMapNode.data.mouseMove.smallEyes.type = keyEye.first;
+            keyMapNode.data.mouseMove.smallEyes.key = keyEye.second;
             keyMapNode.data.mouseMove.smallEyes.pos = getItemPos(smallEyes, "pos");
         }
+
+        // medicine
+        if (checkItemObject(mouseMoveMap, "medicine")) {
+            QJsonObject medicine = mouseMoveMap.value("medicine").toObject();
+            if (!medicine.contains("type") || !medicine.value("type").isString()) {
+                errorString = QString("json error: medicine no find node type");
+                goto parseError;
+            }
+
+            // type just support KMT_CLICK
+            KeyMap::KeyMapType type = getItemKeyMapType(medicine, "type");
+            if (KeyMap::KMT_CLICK != type) {
+                errorString = QString("json error: medicine just support KMT_CLICK");
+                goto parseError;
+            }
+
+            // safe check
+            if (!checkForClick(medicine)) {
+                errorString = QString("json error: medicine node format error");
+                goto parseError;
+            }
+
+            QPair<ActionType, int> keyMedicine = getItemKey(medicine, "key");
+            if (keyMedicine.first == AT_INVALID) {
+                errorString = QString("json error: keyMapNodes node invalid key: %1").arg(medicine.value("key").toString());
+                goto parseError;
+            }
+
+            keyMapNode.data.mouseMove.medicine.type = keyMedicine.first;
+            keyMapNode.data.mouseMove.medicine.key = keyMedicine.second;
+            keyMapNode.data.mouseMove.medicine.pos = getItemPos(medicine, "pos");
+        }
+
+        // missile
+        if (checkItemObject(mouseMoveMap, "missile")) {
+            QJsonObject missile = mouseMoveMap.value("missile").toObject();
+            if (!missile.contains("type") || !missile.value("type").isString()) {
+                errorString = QString("json error: missile no find node type");
+                goto parseError;
+            }
+
+            // type just support KMT_CLICK
+            KeyMap::KeyMapType type = getItemKeyMapType(missile, "type");
+            if (KeyMap::KMT_CLICK != type) {
+                errorString = QString("json error: missile just support KMT_CLICK");
+                goto parseError;
+            }
+
+            // safe check
+            if (!checkForClick(missile)) {
+                errorString = QString("json error: missile node format error");
+                goto parseError;
+            }
+
+            QPair<ActionType, int> keyMedicine = getItemKey(missile, "key");
+            if (keyMedicine.first == AT_INVALID) {
+                errorString = QString("json error: keyMapNodes node invalid key: %1").arg(missile.value("key").toString());
+                goto parseError;
+            }
+
+            keyMapNode.data.mouseMove.missile.type = keyMedicine.first;
+            keyMapNode.data.mouseMove.missile.key = keyMedicine.second;
+            keyMapNode.data.mouseMove.missile.pos = getItemPos(missile, "pos");
+        }
+
 
         m_idxMouseMove = m_keyMapNodes.size();
         m_keyMapNodes.push_back(keyMapNode);

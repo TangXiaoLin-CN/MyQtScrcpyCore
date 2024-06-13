@@ -96,8 +96,17 @@ void InputConvertGame::keyEvent(const QKeyEvent *from, const QSize &frameSize, c
         }
 
         // small eyes
-        if (m_keyMap.isValidMouseMoveMap() && from->key() == m_keyMap.getMouseMoveMap().data.mouseMove.smallEyes.key) {
-            m_ctrlMouseMove.smallEyes = (QEvent::KeyPress == from->type());
+        if (m_keyMap.isValidMouseMoveMap()) {
+            if(from->key() == m_keyMap.getMouseMoveMap().data.mouseMove.smallEyes.key)
+            {
+                m_ctrlMouseMove.smallEyes = (QEvent::KeyPress == from->type());
+            }else if(from->key() == m_keyMap.getMouseMoveMap().data.mouseMove.medicine.key)
+            {
+                m_ctrlMouseMove.medicine = (QEvent::KeyPress == from->type());
+            }else if(from->key() == m_keyMap.getMouseMoveMap().data.mouseMove.missile.key)
+            {
+                m_ctrlMouseMove.missile = (QEvent::KeyPress == from->type());
+            }
 
             if (QEvent::KeyPress == from->type()) {
                 m_processMouseMove = false;
@@ -679,7 +688,9 @@ void InputConvertGame::mouseMoveStartTouch(const QMouseEvent *from,bool isStart)
             startPos = new QPointF(from->localPos().x() / m_showSize.width(),from->localPos().y() / m_showSize.height());
         }
         QPointF mouseMoveStartPos =
-            m_ctrlMouseMove.smallEyes ? m_keyMap.getMouseMoveMap().data.mouseMove.smallEyes.pos : m_keyMap.getMouseMoveMap().data.mouseMove.startPos;
+            m_ctrlMouseMove.smallEyes ? m_keyMap.getMouseMoveMap().data.mouseMove.smallEyes.pos :
+            m_ctrlMouseMove.medicine ? m_keyMap.getMouseMoveMap().data.mouseMove.medicine.pos :
+            m_ctrlMouseMove.missile ? m_keyMap.getMouseMoveMap().data.mouseMove.missile.pos:m_keyMap.getMouseMoveMap().data.mouseMove.startPos;
 
         int id = attachTouchID(Qt::ExtraButton24);
         m_ctrlMouseMove.touchId = id;
