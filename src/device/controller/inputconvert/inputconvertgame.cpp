@@ -627,10 +627,28 @@ bool InputConvertGame::processMouseMove(const QMouseEvent *from)
         m_ctrlMouseMove.lastConverPos.setY(m_ctrlMouseMove.lastConverPos.y() + distance.y() / m_showSize.height());
         if (m_ctrlMouseMove.lastConverPos.x() < 0.05 || m_ctrlMouseMove.lastConverPos.x() > 0.95 || m_ctrlMouseMove.lastConverPos.y() < 0.05
             || m_ctrlMouseMove.lastConverPos.y() > 0.95) {
-            if(!m_ctrlMouseMove.smallEyes && !m_ctrlMouseMove.medicine && m_ctrlMouseMove.missile)
+            if(!m_ctrlMouseMove.smallEyes && !m_ctrlMouseMove.medicine && !m_ctrlMouseMove.missile)
             {
                 mouseMoveStopTouch();
                 mouseMoveStartTouch(from,false);
+            }else
+            {
+                if(m_ctrlMouseMove.lastConverPos.x() < 0.05)
+                {
+                    m_ctrlMouseMove.lastConverPos.setX(0.05);
+                }
+                else if(m_ctrlMouseMove.lastConverPos.x() > 0.95)
+                {
+                    m_ctrlMouseMove.lastConverPos.setX(0.95);
+                }
+                else if(m_ctrlMouseMove.lastConverPos.y() < 0.05)
+                {
+                    m_ctrlMouseMove.lastConverPos.setY(0.05);
+                }
+                else if(m_ctrlMouseMove.lastConverPos.y() > 0.95)
+                {
+                    m_ctrlMouseMove.lastConverPos.setY(0.95);
+                }
             }
         }
         if(m_ctrlMouseMove.touching)
