@@ -625,18 +625,10 @@ bool InputConvertGame::processMouseMove(const QMouseEvent *from)
 
         m_ctrlMouseMove.lastConverPos.setX(m_ctrlMouseMove.lastConverPos.x() + distance.x() / m_showSize.width());
         m_ctrlMouseMove.lastConverPos.setY(m_ctrlMouseMove.lastConverPos.y() + distance.y() / m_showSize.height());
-
         if (m_ctrlMouseMove.lastConverPos.x() < 0.05 || m_ctrlMouseMove.lastConverPos.x() > 0.95 || m_ctrlMouseMove.lastConverPos.y() < 0.05
             || m_ctrlMouseMove.lastConverPos.y() > 0.95) {
-            if (m_ctrlMouseMove.smallEyes) {
-                m_processMouseMove = false;
-                int delay = 30;
-                QTimer::singleShot(delay, this, [this]() { mouseMoveStopTouch(); });
-                QTimer::singleShot(delay * 2, this, [this]() {
-                    mouseMoveStartTouch(nullptr,false);
-                    m_processMouseMove = true;
-                });
-            } else {
+            if(!m_ctrlMouseMove.smallEyes && !m_ctrlMouseMove.medicine && m_ctrlMouseMove.missile)
+            {
                 mouseMoveStopTouch();
                 mouseMoveStartTouch(from,false);
             }
