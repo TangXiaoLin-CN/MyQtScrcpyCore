@@ -75,6 +75,8 @@ public:
             struct
             {
                 KeyNode keyNode;
+                DelayClickNode afterClickNodes[MAX_DELAY_CLICK_NODES];
+                int afterClickNodesCount = 0;
                 bool switchMap = false;
                 bool resetMap = false;
             } click;

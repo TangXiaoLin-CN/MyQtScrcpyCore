@@ -233,6 +233,24 @@ void KeyMap::loadKeyMap(const QString &json)
                 keyMapNode.data.click.switchMap = getItemBool(node, "switchMap");
                 keyMapNode.data.click.resetMap = getItemBool(node, "resetMap");
                 keyMapNode.data.click.keyNode.androidKey = static_cast<AndroidKeycode>((int)getItemDouble(node, "androidKey"));
+
+                QJsonArray clickNodes = node.value("afterClickNodes").toArray();
+                QJsonObject clickNode;
+                keyMapNode.data.click.afterClickNodesCount = 0;
+
+                for (int i = 0; i < clickNodes.size(); i++) {
+                    if (i >= MAX_DELAY_CLICK_NODES) {
+                        qInfo() << "clickNodes too much, up to " << MAX_DELAY_CLICK_NODES;
+                        break;
+                    }
+                    clickNode = clickNodes.at(i).toObject();
+                    DelayClickNode delayClickNode;
+                    delayClickNode.delay = getItemDouble(clickNode, "delay");
+                    delayClickNode.pos = getItemPos(clickNode, "pos");
+                    keyMapNode.data.click.afterClickNodes[i] = delayClickNode;
+                    keyMapNode.data.click.afterClickNodesCount++;
+                }
+
                 m_keyMapNodes.push_back(keyMapNode);
             } break;
             case KeyMap::KMT_CLICK_TWICE: {

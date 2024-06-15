@@ -41,10 +41,10 @@ protected:
     void processSteerWheel(const KeyMap::KeyMapNode &node, const QKeyEvent *from,bool resetMap);
 
     // click
-    void processKeyClick(const QPointF &clickPos, bool clickTwice,bool switchMap,bool resetMap, const QKeyEvent *from);
+    void processKeyClick(const QPointF &clickPos, bool clickTwice,bool switchMap,bool resetMap,const KeyMap::KeyMapNode &node, const QKeyEvent *from);
 
     // click mutil
-    void processKeyClickMulti(const KeyMap::DelayClickNode *nodes, const int count, bool switchMap,bool resetMap, const QKeyEvent *from);
+    void processKeyClickMulti(const KeyMap::DelayClickNode *nodes, const int count, bool switchMap,bool resetMap, const QKeyEvent *from,bool isFunc);
 
     // drag
     void processKeyDrag(const QPointF &startPos, QPointF endPos, const QKeyEvent *from);
