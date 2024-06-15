@@ -483,10 +483,16 @@ void InputConvertGame::processKeyClickMulti(const KeyMap::DelayClickNode *nodes,
 
         // Don't up it too fast
         delay += 20;
-        QTimer::singleShot(delay, this, [this, key, clickPos]() {
+        bool flag = resetMap && i == count - 1; //如果为最后一个按键且需要重置才重置
+        QTimer::singleShot(delay, this, [this, key, clickPos,flag]() {
             int id = getTouchID(key);
             sendTouchUpEvent(id, clickPos);
             detachTouchID(key);
+            if(flag)
+            {
+                resetGameMap();
+                qInfo() << QString("重置游戏映射");
+            }
         });
     }
     if (switchMap) {
@@ -496,11 +502,6 @@ void InputConvertGame::processKeyClickMulti(const KeyMap::DelayClickNode *nodes,
         {
             sendVMouseCtrMsg(VMouseControl::HIDE,0,0,0,0);
         }
-    }
-    if(resetMap)
-    {
-        resetGameMap();
-        qInfo() << QString("重置游戏映射");
     }
 }
 
