@@ -324,6 +324,10 @@ void InputConvertGame::onSteerWheelTimer() {
         return;
     }
     int id = getTouchID(m_ctrlSteerWheel.touchKey);
+    if(id == m_ctrlMouseMove.touchId) //如果视角释放且与当前id相同，则视为抢夺
+    {
+        return;
+    }
     m_ctrlSteerWheel.delayData.currentPos = m_ctrlSteerWheel.delayData.queuePos.dequeue();
     sendTouchMoveEvent(id, m_ctrlSteerWheel.delayData.currentPos);
 
@@ -375,7 +379,7 @@ void InputConvertGame::processSteerWheel(const KeyMap::KeyMapNode &node, const Q
     m_ctrlSteerWheel.delayData.pressedNum = pressedNum;
 
     // last key release and timer no active, active timer to detouch
-    if (pressedNum == 0) {
+    if (pressedNum == 0 || getTouchID(m_ctrlSteerWheel.touchKey) == m_ctrlMouseMove.touchId) {
         if (m_ctrlSteerWheel.delayData.timer->isActive()) {
             m_ctrlSteerWheel.delayData.timer->stop();
             m_ctrlSteerWheel.delayData.queueTimer.clear();
@@ -384,6 +388,11 @@ void InputConvertGame::processSteerWheel(const KeyMap::KeyMapNode &node, const Q
 
         sendTouchUpEvent(getTouchID(m_ctrlSteerWheel.touchKey), m_ctrlSteerWheel.delayData.currentPos);
         detachTouchID(m_ctrlSteerWheel.touchKey);
+        if(resetMap)
+        {
+            resetGameMap();
+            qInfo() << QString("重置游戏映射");
+        }
         return;
     }
 
@@ -396,6 +405,7 @@ void InputConvertGame::processSteerWheel(const KeyMap::KeyMapNode &node, const Q
     if (pressedNum == 1 && flag) {
         m_ctrlSteerWheel.touchKey = from->key();
         int id = attachTouchID(m_ctrlSteerWheel.touchKey);
+        m_ctrlSteerWheel.touchID = id;
         sendTouchDownEvent(id, node.data.steerWheel.centerPos);
 
         getDelayQueue(node.data.steerWheel.centerPos, node.data.steerWheel.centerPos+offset,
@@ -409,11 +419,6 @@ void InputConvertGame::processSteerWheel(const KeyMap::KeyMapNode &node, const Q
                       m_ctrlSteerWheel.delayData.queueTimer);
     }
     m_ctrlSteerWheel.delayData.timer->start();
-    if(resetMap)
-    {
-        resetGameMap();
-        qInfo() << QString("重置游戏映射");
-    }
     return;
 }
 
@@ -435,6 +440,7 @@ void InputConvertGame::processKeyClick(const QPointF &clickPos, bool clickTwice,
         if(id == m_ctrlMouseMove.touchId)
         {
              qInfo() << QString("异常点击");
+             return;
         }
         sendTouchDownEvent(id, clickPos);
         if (clickTwice) {

@@ -93,6 +93,7 @@ private:
     {
         // the first key pressed
         int touchKey = Qt::Key_unknown;
+        int touchID = Qt::Key_unknown;
         bool pressedUp = false;
         bool pressedDown = false;
         bool pressedLeft = false;
